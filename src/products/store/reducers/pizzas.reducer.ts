@@ -3,7 +3,9 @@ import {Pizza} from '../../models/pizza.model';
 
 
 export interface PizzaState {
-    data: Pizza[],
+    entities: {
+        [id: number] : Pizza
+    }
     loaded: boolean,
     loading: boolean
 }
@@ -11,50 +13,7 @@ export interface PizzaState {
 
 
 export const initialState: PizzaState = {
-    data: [
-        {
-            "name": "Seaside Surfin'",
-            "toppings": [
-                {
-                    "id": 6,
-                    "name": "mushroom"
-                },
-                {
-                    "id": 7,
-                    "name": "olive"
-                },
-                {
-                    "id": 2,
-                    "name": "bacon"
-                },
-                {
-                    "id": 3,
-                    "name": "basil"
-                },
-                {
-                    "id": 1,
-                    "name": "anchovy"
-                },
-                {
-                    "id": 8,
-                    "name": "onion"
-                },
-                {
-                    "id": 11,
-                    "name": "sweetcorn"
-                },
-                {
-                    "id": 9,
-                    "name": "pepper"
-                },
-                {
-                    "id": 5,
-                    "name": "mozzarella"
-                }
-            ],
-            "id": 2
-        }
-    ],
+    entities: {},
     loaded: false,
     loading: false
 };
@@ -64,7 +23,7 @@ export const initialState: PizzaState = {
 export function reducer(
     state:PizzaState=initialState, 
     action: fromPizzas.PizzasAction
-): PizzaState   {
+): PizzaState {
 
     switch(action.type) {
         case fromPizzas.LOAD_PIZZAS: {
@@ -73,11 +32,44 @@ export function reducer(
                 loading: true
             };
         }
+
+
         case fromPizzas.LOAD_PIZZAS_SUCCESS: {
+            // entities:
+            //
+            // what we get:
+            //[{id:1}, {id: 2}]
+            //
+            // what we want to convert it to:
+            //{
+            //    1: {
+            //        id: 1,
+            //        name: 'Pizza',
+            //        toppings: []
+            //    }
+            //}
+            //const id = 1111111111`;
+            //pizza[id] 
+
+            const pizzas = action.payload;
+
+            const entities = pizzas.reduce(
+                (entities: { [id: number]: Pizza }, pizza: Pizza) => { 
+                    return {
+                        ...entities,
+                        [pizza.id]: pizza // es6 syntax; dynamically creates properties by id
+                    };
+                }, 
+                {
+                    ...state.entities
+                }
+            );
+
             return {
                 ...state,
                 loading: false, 
-                loaded: true
+                loaded: true,
+                entities: entities
             };
         }
 
@@ -100,6 +92,6 @@ export const getPizzasLoaded = (state: PizzaState) => {
 
 
 
-export const getPizzas = (state: PizzaState) => {
-    return state.data;
+export const getPizzasEntities = (state: PizzaState) => {
+    return state.entities;
 }
