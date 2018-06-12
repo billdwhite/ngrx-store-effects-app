@@ -76,6 +76,30 @@
         {
           "id": 2,
           "name": "bacon"
+        },
+        {
+          "id": 1,
+          "name": "anchovy"
+        },
+        {
+          "id": 5,
+          "name": "mozzarella"
+        },
+        {
+          "id": 6,
+          "name": "mushroom"
+        },
+        {
+          "id": 11,
+          "name": "sweetcorn"
+        },
+        {
+          "id": 12,
+          "name": "tomato"
+        },
+        {
+          "id": 8,
+          "name": "onion"
         }
       ],
       "id": 1
