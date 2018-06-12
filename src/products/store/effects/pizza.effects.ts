@@ -5,6 +5,7 @@ import { switchMap, map, catchError  } from "rxjs/operators";
 import * as pizzaActions from "../actions/pizzas.action";
 import * as fromServices from '../../services';
 import {Pizza} from '../../models/pizza.model';
+import * as fromRoot from '../../../app/store';
 
 @Injectable()
 export class PizzaEffects {
@@ -39,17 +40,32 @@ export class PizzaEffects {
         .pipe(
             map((action: pizzaActions.CreatePizza) => action.payload), // gets the action; we are only interested in the payload, so we map to get the action
             switchMap((pizza: Pizza) => {
-                return this.pizzaService.createPizza(pizza).pipe(
-                    map((pizza: Pizza) => {
-                        // pizza saved and return from server
-                        return new pizzaActions.CreatePizzaSuccess(pizza);
-                    }),
-                    catchError((error) => {
-                        return Observable.of(new pizzaActions.CreatePizzaFail(error));
-                    })
-                )
+                return this.pizzaService
+                    .createPizza(pizza).pipe(
+                        map((pizza: Pizza) => {
+                            // pizza saved and return from server
+                            return new pizzaActions.CreatePizzaSuccess(pizza);
+                        }),
+                        catchError((error) => {
+                            return Observable.of(new pizzaActions.CreatePizzaFail(error));
+                        })
+                    )
             })
         );
+
+
+    @Effect()
+    createPizzaSuccess$ = this.actions$
+        .ofType(pizzaActions.CREATE_PIZZA_SUCCESS)
+        .pipe(
+            map((action: pizzaActions.CreatePizzaSuccess) => { return action.payload; }),
+            map((pizza: Pizza) => { 
+                return new fromRoot.Go({
+                    path: ['/products', pizza.id]
+                });
+            })
+        )
+
 
 
     @Effect()
@@ -89,4 +105,20 @@ export class PizzaEffects {
                     )
             })
         );
+
+
+
+    @Effect()
+    handlePizzaSuccess$ = this.actions$
+        .ofType(
+            pizzaActions.UPDATE_PIZZA_SUCCESS, 
+            pizzaActions.REMOVE_PIZZA_SUCCESS
+        )
+        .pipe(
+            map((action) => {
+                return new fromRoot.Go({
+                    path: ['/products'],
+                });
+            })
+        )
 }
