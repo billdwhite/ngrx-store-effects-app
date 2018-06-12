@@ -34,6 +34,15 @@ export function reducer(
         }
 
 
+        case fromPizzas.LOAD_PIZZAS_FAIL: {
+            return {
+                ...state,
+                loading: false,
+                loaded: false
+            };
+        }
+
+
         case fromPizzas.LOAD_PIZZAS_SUCCESS: {
             // entities:
             //
@@ -72,6 +81,33 @@ export function reducer(
                 entities: entities
             };
         }
+
+
+        case fromPizzas.CREATE_PIZZA_SUCCESS:
+        case fromPizzas.UPDATE_PIZZA_SUCCESS: {
+            const pizza = action.payload;
+            // creates a new state from the new pizza returne from the server
+            const entities = {
+                ...state.entities,
+                [pizza.id]: pizza
+            };
+            return {
+                ...state,
+                entities: entities
+            };
+        }
+
+
+        case fromPizzas.REMOVE_PIZZA_SUCCESS: {
+            const pizza = action.payload;
+            const { [pizza.id]: removed, ...remainingEntities } = state.entities;  // destructure the entites to get the value and destructing the result
+
+            return {
+                ...state,
+                entities: remainingEntities
+            }
+        }
+
 
     }
 

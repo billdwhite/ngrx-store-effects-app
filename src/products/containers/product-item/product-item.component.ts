@@ -32,7 +32,9 @@ export class ProductItemComponent implements OnInit {
     toppings$: Observable<Topping[]>;
     visualise$: Observable<Pizza>;
 
+    
     constructor(private store: Store<fromStore.ProductsState>) {}
+
 
     ngOnInit() {
         this.pizza$ = this.store.select(fromStore.getSelectedPizza).pipe(
@@ -51,14 +53,27 @@ export class ProductItemComponent implements OnInit {
         this.visualise$ = this.store.select(fromStore.getPizzaVisualized);
     }
 
+
     onSelect(event: number[]) {
         console.log('onSelect:::', event);
         this.store.dispatch(new fromStore.VisualizeToppings(event));
     }
 
-    onCreate(event: Pizza) {}
 
-    onUpdate(event: Pizza) {}
+    onCreate(event: Pizza) {
+        this.store.dispatch(new fromStore.CreatePizza(event));
+    }
 
-    onRemove(event: Pizza) {}
+
+    onUpdate(event: Pizza) {
+        this.store.dispatch(new fromStore.UpdatePizza(event));
+    }
+
+
+    onRemove(event: Pizza) {
+        const remove = window.confirm("Are you sure?");
+        if (remove) {
+            this.store.dispatch(new fromStore.RemovePizza(event));
+        }
+    }
 }
