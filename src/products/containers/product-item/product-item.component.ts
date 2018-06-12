@@ -1,14 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
+import {Component, OnInit, ChangeDetectionStrategy} from "@angular/core";
+import {Store} from "@ngrx/store";
+import {Observable} from "rxjs";
 import * as fromStore from "../../store";
-import { Pizza } from "../../models/pizza.model";
-import { Topping } from "../../models/topping.model";
+import {Pizza} from "../../models/pizza.model";
+import {Topping} from "../../models/topping.model";
 
 @Component({
-  selector: "product-item",
-  styleUrls: ["product-item.component.scss"],
-  template: `
+    selector: "product-item",
+    styleUrls: ["product-item.component.scss"],
+    template: `
     <div 
       class="product-item">
       <pizza-form
@@ -26,22 +26,24 @@ import { Topping } from "../../models/topping.model";
   `
 })
 export class ProductItemComponent implements OnInit {
-  pizza$: Observable<Pizza>;
-  visualise: Pizza;
-  toppings$: Observable<Topping[]>;
 
-  constructor(private store: Store<fromStore.ProductsState>) {}
+    pizza$: Observable<Pizza>;
+    toppings$: Observable<Topping[]>;
+    visualise: Pizza;
 
-  ngOnInit() {
-    this.store.dispatch(new fromStore.LoadToppings());
-    this.pizza$ = this.store.select(fromStore.getSelectedPizza);
-  }
+    constructor(private store: Store<fromStore.ProductsState>) {}
 
-  onSelect(event: number[]) {}
+    ngOnInit() {
+        this.store.dispatch(new fromStore.LoadToppings());
+        this.pizza$ = this.store.select(fromStore.getSelectedPizza);
+        this.toppings$ = this.store.select(fromStore.getAllToppings);
+    }
 
-  onCreate(event: Pizza) {}
+    onSelect(event: number[]) {}
 
-  onUpdate(event: Pizza) {}
+    onCreate(event: Pizza) {}
 
-  onRemove(event: Pizza) {}
+    onUpdate(event: Pizza) {}
+
+    onRemove(event: Pizza) {}
 }
