@@ -21,7 +21,7 @@ export const initialState: PizzaState = {
 
 
 export function reducer(
-    state:PizzaState=initialState, 
+    state: PizzaState=initialState, 
     action: fromPizzas.PizzasAction
 ): PizzaState {
 
